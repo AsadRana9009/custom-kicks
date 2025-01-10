@@ -1,21 +1,14 @@
 import { useState } from "react";
 import { sneaker, casual, formal } from "../assets/images";
-import {
-  sneaker1,
-  sneaker2,
-  sneaker3,
-  sneaker4,
-  sneaker5,
-  sneaker6,
-} from "../assets/images";
-
 import { BsStars } from "react-icons/bs";
 
 const AIShoeModeling = () => {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
   const [generatedImages, setGeneratedImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const styles = [
     {
@@ -38,36 +31,76 @@ const AIShoeModeling = () => {
     },
   ];
 
-  const generateImages = () => {
-    // Use imported sneaker images as mock AI-generated images
-    const mockImages = [sneaker1, sneaker2, sneaker3, sneaker4, sneaker5, sneaker6];
-    setGeneratedImages(mockImages);
+  const generateImages = async () => {
+    if (!selectedStyle || !aiPrompt.trim()) {
+      setError("Please select a style and provide a description.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    const payload = {
+      shoe_description: aiPrompt,
+      shoe_type: selectedStyle,
+    };
+
+    try {
+      const response = await fetch(
+        "https://4256-2407-aa80-116-73cc-ec4f-995f-b2ea-60ce.ngrok-free.app/text_to_shoe/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to generate images. Please try again later.");
+      }
+
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.every((url) => typeof url === "string")) {
+        setGeneratedImages(data);
+      } else {
+        throw new Error("Invalid response from API.");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="bg-[#1A1A1D] min-h-screen text-white flex flex-col items-center mt-10 padding-x py-16">
-      {/* Title and Description (hidden after generation) */}
       {generatedImages.length === 0 && (
         <>
           <h1 className="text-5xl font-bold mb-8 text-center text-[#CD1818]">
             Tell Us Your Taste
           </h1>
           <p className="text-lg text-center max-w-2xl mb-16">
-            Select your preferred shoe style to start creating your custom shoe with AI-powered design tools.
+            Select your preferred shoe style to start creating your custom shoe
+            with AI-powered design tools.
           </p>
         </>
       )}
 
-      {/* Style Selection Cards */}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
       {generatedImages.length === 0 ? (
         <div className="grid sm:grid-cols-3 gap-8 mb-16">
           {styles.map((style) => (
             <div
               key={style.id}
-              className={`p-6 rounded-lg border-2 transition-all duration-300 cursor-pointer text-center ${selectedStyle === style.id
+              className={`p-6 rounded-lg border-2 transition-all duration-300 cursor-pointer text-center ${
+                selectedStyle === style.id
                   ? "border-[#CD1818] bg-[#2A2A2D]"
                   : "border-gray-600 hover:border-[#CD1818] hover:shadow-lg"
-                }`}
+              }`}
               onClick={() => setSelectedStyle(style.id)}
             >
               <img
@@ -81,20 +114,18 @@ const AIShoeModeling = () => {
           ))}
         </div>
       ) : (
-        // Display generated images after clicking "Generate"
         <div className="grid sm:grid-cols-3 gap-8 mb-16">
           {generatedImages.map((img, index) => (
             <div
               key={index}
               className="relative w-full h-40 bg-[#2A2A2D] rounded-lg overflow-hidden border-4 border-[#CD1818] transition-all duration-300"
-              onClick={() => setSelectedImage(img)} // Select image on click
+              onClick={() => setSelectedImage(img)}
             >
               <img
                 src={img}
                 alt={`Generated Shoe ${index + 1}`}
                 className="w-full h-full object-cover"
               />
-              {/* Hover text to select image */}
               <div
                 className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#CD1818] text-2xl font-bold cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-300"
               >
@@ -105,11 +136,11 @@ const AIShoeModeling = () => {
         </div>
       )}
 
-      {/* Input Box */}
       {selectedStyle && (
         <div className="w-full max-w-2xl mb-16">
           <h3 className="text-3xl font-semibold mb-4">
-            Ask AI to Generate Your Dream {styles.find((style) => style.id === selectedStyle)?.label}
+            Ask AI to Generate Your Dream{" "}
+            {styles.find((style) => style.id === selectedStyle)?.label}
           </h3>
           <textarea
             value={aiPrompt}
@@ -120,9 +151,9 @@ const AIShoeModeling = () => {
           <button
             onClick={generateImages}
             className="mt-4 w-full py-3 bg-[#CD1818] text-white rounded-lg hover:bg-[#A31414] transition-all duration-300 flex items-center justify-center"
+            disabled={loading}
           >
-            <BsStars className="mr-2" />
-            Generate
+            {loading ? "Generating..." : <><BsStars className="mr-2" /> Generate</>}
           </button>
         </div>
       )}
