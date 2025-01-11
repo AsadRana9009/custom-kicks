@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BsStars } from "react-icons/bs";
+import CountUp from 'react-countup';
 
-import { shoes, statistics } from "../constants";
-import { Button, ShoeCard } from "../components";
+import { statistics } from "../constants";
+import { Button } from "../components";
 import { bigShoe1 } from "../assets/images";
 import { arrowRight } from "../assets/icons";
-import { BsStars } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const [bigShoeImg, setBigShoeImg] = useState(bigShoe1);
@@ -16,7 +17,6 @@ const Hero = () => {
       id="home"
       className="w-full flex xl:flex-row flex-col justify-center min-h-screen gap-10 max-container bg-[#1A1A1D]"
     >
-      {/* Left Section */}
       <div className="relative xl:w-2/5 flex flex-col justify-center items-start w-full max-xl:padding-x pt-28">
         <p className="text-xl font-montserrat text-[#CD1818]">
           Create Your Perfect Pair
@@ -45,13 +45,17 @@ const Hero = () => {
           create, and order your perfect pair today.
         </p>
 
-        <Button label="Start Designing" iconURL={arrowRight} onClick={() => navigate("ai-page")} />
+        <div className="flex flex-row gap-4 justify-center items-center">
+          <Button label="2D AI Assistance" iconURL={arrowRight} onClick={() => navigate("ai-page")} />
+          <Button label="3D Modeling" iconURL={arrowRight} onClick={() => navigate("modal-page")} />
+        </div>
 
         <div className="flex justify-start items-start flex-wrap w-full mt-20 gap-16">
           {statistics.map((stat, index) => (
             <div key={index}>
               <p className="text-4xl font-palanquin font-bold text-white">
-                {stat.value}
+                <CountUp start={0} end={parseInt(stat.value.replace(/[^\d]/g, ""))} duration={3} separator="," />
+                {stat.value.replace(/[0-9]/g, "")}
               </p>
               <p className="leading-7 font-montserrat text-[#CD1818]">
                 {stat.label}
@@ -60,8 +64,6 @@ const Hero = () => {
           ))}
         </div>
       </div>
-
-      {/* Right Section */}
       <div className="relative flex-1 flex justify-center items-center xl:min-h-screen max-xl:py-40 glass-background bg-cover bg-center">
         <img
           src={bigShoeImg}
@@ -70,19 +72,6 @@ const Hero = () => {
           height={502}
           className="object-contain relative z-10"
         />
-
-        {/* <div className="flex sm:gap-6 gap-4 absolute -bottom-[5%] sm:left-[10%] max-sm:px-6">
-          {shoes.map((image, index) => (
-            <div key={index}>
-              <ShoeCard
-                index={index}
-                imgURL={image}
-                changeBigShoeImage={(shoe) => setBigShoeImg(shoe)}
-                bigShoeImg={bigShoeImg}
-              />
-            </div>
-          ))}
-        </div> */}
       </div>
     </section>
   );

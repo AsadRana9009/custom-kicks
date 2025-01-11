@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; // Use NavLink for active link styling
+import { NavLink, useNavigate } from "react-router-dom";
 import { hamburger } from "../assets/icons";
 import { navLinks } from "../constants";
 import Button from "./Button";
 
 const Nav = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10); // Detect small scroll
+      setIsScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -19,6 +20,20 @@ const Nav = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setUser(null);
+  };
 
   return (
     <header
@@ -30,7 +45,6 @@ const Nav = () => {
       style={{ height: "80px" }}
     >
       <nav className="flex justify-between items-center max-container padding-x h-full">
-        {/* Logo */}
         <a
           href="/"
           className="text-[#CD1818] font-bold text-3xl font-pacifico"
@@ -38,8 +52,6 @@ const Nav = () => {
         >
           Custom Kicks
         </a>
-
-        {/* Navigation Links */}
         <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
           {navLinks.map((item) => (
             <li key={item.label}>
@@ -58,13 +70,16 @@ const Nav = () => {
             </li>
           ))}
         </ul>
-
-        {/* Auth Links */}
         <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
-          <Button label="Sign In" onClick={() => navigate("/login")} />
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span>Hello! {user.first_name}</span>
+              <Button label="Logout" onClick={handleLogout} />
+            </div>
+          ) : (
+            <Button label="Sign In" onClick={() => navigate("/login")} />
+          )}
         </div>
-
-        {/* Hamburger Icon for Mobile */}
         <div className="hidden max-lg:block">
           <img src={hamburger} alt="hamburger icon" width={25} height={25} />
         </div>

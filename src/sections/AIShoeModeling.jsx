@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { sneaker, casual, formal } from "../assets/images";
 import { BsStars } from "react-icons/bs";
+import { ToastContainer, toast } from "react-toastify";
+import { PulseLoader, BarLoader } from "react-spinners";
+import "react-toastify/dist/ReactToastify.css";
+import { BsQuestionLg } from "react-icons/bs";
+import { HiSpeakerphone } from "react-icons/hi";
+import { ReactTyped } from "react-typed";
 
 const AIShoeModeling = () => {
   const [selectedStyle, setSelectedStyle] = useState("");
@@ -8,7 +14,8 @@ const AIShoeModeling = () => {
   const [generatedImages, setGeneratedImages] = useState([]);
   const [, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
+  const [isStyleSelected, setIsStyleSelected] = useState(false);
 
   const styles = [
     {
@@ -34,11 +41,14 @@ const AIShoeModeling = () => {
   const generateImages = async () => {
     if (!selectedStyle || !aiPrompt.trim()) {
       setError("Please select a style and provide a description.");
+      toast.error("Please select a style and provide a description.");
       return;
     }
 
     setError("");
     setLoading(true);
+
+    setGeneratedImages([]);
 
     const payload = {
       shoe_description: aiPrompt,
@@ -65,19 +75,35 @@ const AIShoeModeling = () => {
 
       if (Array.isArray(data) && data.every((url) => typeof url === "string")) {
         setGeneratedImages(data);
+        toast.success("Shoe designs generated successfully!");
       } else {
         throw new Error("Invalid response from API.");
       }
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleStyleSelect = (styleId) => {
+    setSelectedStyle(styleId);
+    setIsStyleSelected(true);
+  };
+
+  const handleReselect = () => {
+    setSelectedStyle("");
+    setGeneratedImages([]);
+    setIsStyleSelected(false);
+    setAiPrompt("");
+  };
+
+
   return (
     <div className="bg-[#1A1A1D] min-h-screen text-white flex flex-col items-center mt-10 padding-x py-16">
-      {generatedImages.length === 0 && (
+      <ToastContainer />
+      {generatedImages.length === 0 && !isStyleSelected && (
         <>
           <h1 className="text-5xl font-bold mb-8 text-center text-[#CD1818]">
             Tell Us Your Taste
@@ -89,19 +115,16 @@ const AIShoeModeling = () => {
         </>
       )}
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      {generatedImages.length === 0 ? (
+      {generatedImages.length === 0 && !isStyleSelected ? (
         <div className="grid sm:grid-cols-3 gap-8 mb-16">
           {styles.map((style) => (
             <div
               key={style.id}
-              className={`p-6 rounded-lg border-2 transition-all duration-300 cursor-pointer text-center ${
-                selectedStyle === style.id
-                  ? "border-[#CD1818] bg-[#2A2A2D]"
-                  : "border-gray-600 hover:border-[#CD1818] hover:shadow-lg"
-              }`}
-              onClick={() => setSelectedStyle(style.id)}
+              className={`p-10 rounded-lg border-2 transition-all duration-300 cursor-pointer text-center ${selectedStyle === style.id
+                ? "border-[#CD1818] bg-[#2A2A2D]"
+                : "border-gray-600 hover:border-[#CD1818] hover:shadow-lg"
+                }`}
+              onClick={() => handleStyleSelect(style.id)}
             >
               <img
                 src={style.image}
@@ -114,31 +137,77 @@ const AIShoeModeling = () => {
           ))}
         </div>
       ) : (
-        <div className="grid sm:grid-cols-3 gap-8 mb-16">
-          {generatedImages.map((img, index) => (
-            <div
-              key={index}
-              className="relative w-full h-40 bg-[#2A2A2D] rounded-lg overflow-hidden border-4 border-[#CD1818] transition-all duration-300"
-              onClick={() => setSelectedImage(img)}
-            >
-              <img
-                src={img}
-                alt={`Generated Shoe ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-              <div
-                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#CD1818] text-2xl font-bold cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-300"
-              >
-                Select
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {selectedStyle && (
         <div className="w-full max-w-2xl mb-16">
-          <h3 className="text-3xl font-semibold mb-4">
+          <div className="flex flex-row justify-between items-center">
+            <button
+              onClick={handleReselect}
+              disabled={loading}
+              className="py-2 px-4 bg-[#CD1818] text-white rounded-lg hover:bg-[#A31414] transition-all duration-300"
+            >
+              Reselect Shoe Type
+            </button>
+            {isStyleSelected && generatedImages.length === 0 && loading && (
+              <div className="flex items-center justify-center">
+                <HiSpeakerphone className="text-3xl text-[#CD1818] mr-4" />
+                <ReactTyped
+                  strings={["Let us do some magic."]}
+                  typeSpeed={50}
+                  backSpeed={50}
+                  attr="placeholder"
+                  loop
+                >
+                  <input
+                    type="text"
+                    className="text-white bg-transparent w-full resize-none"
+                    style={{
+                      border: 'none',
+                      outline: 'none',
+                      whiteSpace: 'normal',
+                      minHeight: '50px',
+                    }}
+                  />
+                </ReactTyped>
+              </div>
+            )}
+          </div>
+          {/* {generatedImages.length > 0 && ( */}
+          <div className="grid sm:grid-cols-3 gap-8 mt-8 mb-8">
+            {generatedImages.length === 0 ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="relative w-48 h-40 bg-[#2A2A2D] rounded-lg overflow-hidden border-4 border-[#CD1818] flex justify-center items-center transition-all duration-300"
+                >
+                  {loading ? (
+                    <BarLoader color="#CD1818" size={40} />
+                  ) : (
+                    <BsQuestionLg size={34} className="text-[#CD1818]" />
+                  )}
+                </div>
+              ))
+            ) : (
+              generatedImages.map((img, index) => (
+                <div
+                  key={index}
+                  className="relative w-48 h-48 bg-[#2A2A2D] rounded-lg overflow-hidden border-4 border-[#CD1818] transition-all duration-300"
+                  onClick={() => setSelectedImage(img)}
+                >
+                  <img
+                    src={img}
+                    alt={`Generated Shoe ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#CD1818] text-2xl font-bold cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-300"
+                  >
+                    Select
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {/* )} */}
+          <h3 className="text-3xl text-center font-semibold mb-4">
             Ask AI to Generate Your Dream{" "}
             {styles.find((style) => style.id === selectedStyle)?.label}
           </h3>
@@ -151,9 +220,16 @@ const AIShoeModeling = () => {
           <button
             onClick={generateImages}
             className="mt-4 w-full py-3 bg-[#CD1818] text-white rounded-lg hover:bg-[#A31414] transition-all duration-300 flex items-center justify-center"
-            disabled={loading}
+            disabled={loading || aiPrompt.trim() === ""}
           >
-            {loading ? "Generating..." : <><BsStars className="mr-2" /> Generate</>}
+            {loading ? (
+              <PulseLoader color="#ffffff" size={10} />
+            ) : (
+              <>
+                <BsStars className="mr-2" />
+                Generate
+              </>
+            )}
           </button>
         </div>
       )}

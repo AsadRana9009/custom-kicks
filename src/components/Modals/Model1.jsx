@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+/* eslint-disable react/no-unknown-property */
 import { useGLTF } from '@react-three/drei'
 
 export function Model1(props) {

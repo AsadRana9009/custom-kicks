@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -91,38 +92,43 @@ const ModalPage = () => {
                     </div>
                 ) : (
                     <>
-                        <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", width: "100%" }}>
                             <div style={{ textAlign: "center", display: "flex", justifyContent: "center", flexDirection: "column", gap: "10px" }}>
                                 <h3 style={{ color: "white", marginBottom: "1rem" }}>Formal Shoes</h3>
-                                <Canvas style={{ height: "45vh", width: "45vh", backgroundColor: "#fff", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
+                                <Canvas style={{ height: "40vh", width: "40vh", backgroundColor: "grey", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
                                     <ambientLight intensity={20.2} />
                                     <pointLight position={[2, 5, 2]} intensity={10} />
-                                    <Model1 scale={0.5} position={[0, 0, 0]} />
-                                    <OrbitControls enableZoom={true} enablePan={false} />
+                                    {/* Adjust rotation to tilt the model */}
+                                    <Model1 scale={0.012} position={[0, -0.4, 0]} rotation={[0.3, Math.PI / 2, 0]} />
+                                    <OrbitControls enableZoom={true} enablePan={false} autoRotate autoRotateSpeed={1} />
                                 </Canvas>
                                 <Button label="Select" />
                             </div>
                             <div style={{ textAlign: "center", display: "flex", justifyContent: "center", flexDirection: "column", gap: "10px" }}>
                                 <h3 style={{ color: "white", marginBottom: "1rem" }}>Sports Shoes</h3>
-                                <Canvas style={{ height: "45vh", width: "45vh", backgroundColor: "#fff", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
-                                    <ambientLight intensity={2.2} />
+                                <Canvas style={{ height: "40vh", width: "40vh", backgroundColor: "grey", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
+                                    <ambientLight intensity={1.2} />
                                     <pointLight position={[2, 5, 2]} intensity={10} />
-                                    <Model2 scale={0.6} position={[0, 0, 0]} />
-                                    <OrbitControls enableZoom={true} enablePan={false} />
+                                    {/* Adjust rotation to tilt the model */}
+                                    <Model2 scale={8.0} position={[0, 1, 0]} rotation={[0.3, 0, 0]} />
+                                    <OrbitControls enableZoom={true} enablePan={false} autoRotate autoRotateSpeed={1} />
                                 </Canvas>
                                 <Button label="Select" />
                             </div>
                             <div style={{ textAlign: "center", display: "flex", justifyContent: "center", flexDirection: "column", gap: "10px" }}>
                                 <h3 style={{ color: "white", marginBottom: "1rem" }}>Casual Shoes</h3>
-                                <Canvas style={{ height: "45vh", width: "45vh", backgroundColor: "#fff", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
+                                <Canvas style={{ height: "40vh", width: "40vh", backgroundColor: "grey", borderRadius: "1rem", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)" }}>
                                     <ambientLight intensity={2.2} />
                                     <pointLight position={[2, 5, 2]} intensity={10} />
-                                    <Model3 scale={0.5} position={[0, 0, 0]} />
-                                    <OrbitControls enableZoom={true} enablePan={false} />
+                                    {/* Adjust rotation to tilt the model */}
+                                    <Model3 scale={0.016} position={[-1, -1, 1]} rotation={[0.4, 0 , 0]} />
+                                    <OrbitControls enableZoom={true} enablePan={false} autoRotate autoRotateSpeed={1} />
                                 </Canvas>
                                 <Button label="Select" />
                             </div>
                         </div>
+
+
                     </>
                 )}
             </div>
