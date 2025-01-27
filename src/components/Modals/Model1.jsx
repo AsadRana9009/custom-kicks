@@ -1,15 +1,27 @@
 /* eslint-disable react/no-unknown-property */
-import { useGLTF } from '@react-three/drei'
+import { useGLTF } from '@react-three/drei';
+import * as THREE from "three";
 
-export function Model1(props) {
+export function Model1({ texture, bodyColor, lacesColor, ...props }) {
   const { nodes, materials } = useGLTF('/models/oxford_style_leather_shoe_for_men.glb')
+  const loadedTexture = texture ? new THREE.TextureLoader().load(texture) : null;
+
+  const bodyMaterial = loadedTexture
+    ? new THREE.MeshStandardMaterial({ map: loadedTexture })
+    : materials.BlackLeather;
+
+    const lacesMaterial = lacesColor
+    ? new THREE.MeshStandardMaterial({ color: lacesColor })
+    : materials.Cord;
+
   return (
     <group {...props} dispose={null}>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Plane_BlackLeather_0.geometry}
-        material={materials.BlackLeather}
+        material={bodyMaterial}
+        material-color={bodyColor}
         position={[132.139, 90.486, 0]}
         scale={30.369}
       />
@@ -26,7 +38,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[0, 238.076, 0]}
         scale={100}
       />
@@ -34,7 +46,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve001_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[-15.808, 229.943, -0.536]}
         scale={100}
       />
@@ -51,7 +63,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve002_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[-31.963, 219.478, -0.536]}
         scale={100}
       />
@@ -59,7 +71,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve003_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[-49.181, 209.214, -0.536]}
         rotation={[0, 0, 0.02]}
         scale={100}
@@ -68,7 +80,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve004_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[-46.926, 109.731, -1.438]}
         rotation={[0, 0, 0.095]}
         scale={100}
@@ -77,7 +89,7 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.BezierCurve005_Cord_0.geometry}
-        material={materials.Cord}
+        material={lacesMaterial}
         position={[-62.483, 100.088, -1.438]}
         rotation={[0, 0, 0.095]}
         scale={100}
@@ -86,7 +98,8 @@ export function Model1(props) {
         castShadow
         receiveShadow
         geometry={nodes.Plane001_BlackLeather_0.geometry}
-        material={materials.BlackLeather}
+        material={bodyMaterial}
+        material-color={bodyColor}
         position={[8.434, 140.824, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         scale={100}

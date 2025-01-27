@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { arrowRight } from "../assets/icons";
 import { offer1 } from "../assets/images";
 import { Button } from "../components";
 
 const SpecialOffer = () => {
+  const navigate = useNavigate();
   return (
     <section className='flex justify-between items-center max-xl:flex-col-reverse gap-10 max-container'>
       {/* Image Section */}
@@ -31,7 +33,7 @@ const SpecialOffer = () => {
           blend of innovation, comfort, and style—designed just for you.
         </p>
         <div className='mt-11 flex flex-wrap gap-4'>
-          <Button label='Start Designing' iconURL={arrowRight} />
+          <Button label='Start Designing' iconURL={arrowRight} onClick={() => navigate("ai-page")}/>
           <Button
             label='Explore More'
             backgroundColor='bg-white'

@@ -4,7 +4,6 @@ import {
   CustomerReviews,
   Footer,
   Hero,
-  PopularProducts,
   Services,
   SpecialOffer,
   Subscribe,
@@ -15,6 +14,11 @@ import Signup from "./components/Signup";
 import AboutUs from "./sections/AboutUs";
 import AIShoeModeling from "./sections/AIShoeModeling";
 import ModalPage from "./sections/ModalPage";
+import CustomizeShoe from "./sections/CustomizeShoe";
+import ContactUs from "./sections/ContactUs";
+import ProductsPage from "./sections/ProductsPage";
+import { CartProvider } from "./context/CartContext";
+import CartPage from "./sections/CartPage";
 
 const App = () => {
   const ConditionalNav = ({ children }) => {
@@ -31,6 +35,7 @@ const App = () => {
   };
 
   return (
+    <CartProvider>
     <Router>
       <main className="relative bg-[#1A1A1D]">
         <ConditionalNav>
@@ -41,9 +46,6 @@ const App = () => {
                 <>
                   <section className="xl:padding-l wide:padding-r padding-b">
                     <Hero />
-                  </section>
-                  <section className="padding">
-                    <PopularProducts />
                   </section>
                   <section className="padding">
                     <SuperQuality />
@@ -69,12 +71,17 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/products" element={<ProductsPage />} />
             <Route path="/ai-page" element={<AIShoeModeling />} />
             <Route path="/modal-page" element={<ModalPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/ai-page/customize" element={<CustomizeShoe />} />
           </Routes>
         </ConditionalNav>
       </main>
     </Router>
+    </CartProvider>
   );
 };
 

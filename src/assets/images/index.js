@@ -9,15 +9,21 @@ import footerLogo from './footer-logo.svg'
 import headerLogo from './header-logo.svg'
 
 import offer from './offer.svg'
-import offer1 from './offer1.jpg'
+import offer1 from './offer1.png'
 
 import shoe4 from './shoe4.svg'
 import shoe5 from './shoe5.svg'
 import shoe6 from './shoe6.svg'
 import shoe7 from './shoe7.svg'
 import shoe8 from './shoe8.svg'
+import superShoes from './super-shoes.png'
 import aboutus1 from './aboutus1.png'
 import aboutus2 from './aboutus2.jpg'
+
+import texture1 from './texture1.jpg'
+import texture2 from './texture2.jpg'
+import texture3 from './texture3.jpg'
+import texture4 from './texture4.jpg'
 
 import sneaker from './sneaker.jpg'
 import casual from './casual.jpg'
@@ -65,8 +71,14 @@ export {
     shoe6,
     shoe7,
     shoe8,
+    superShoes,
     aboutus1,
     aboutus2,
+
+    texture1,
+    texture2,
+    texture3,
+    texture4,
 
     thumbnailBackground,
     thumbnailShoe1,

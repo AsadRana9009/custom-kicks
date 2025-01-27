@@ -63,7 +63,7 @@ const Footer = () => {
             height={20}
             className='rounded-full m-0'
           />
-          <p>© 2024 Custom Kicks Shoes. All rights reserved.</p>
+          <p>© 2025 Custom Kicks Shoes. All rights reserved.</p>
         </div>
         <div className='flex gap-8 mt-4 max-sm:mt-6'>
           <a href='/terms' className='hover:text-coral-red'>Terms & Conditions</a>

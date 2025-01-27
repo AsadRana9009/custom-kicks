@@ -3,8 +3,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { hamburger } from "../assets/icons";
 import { navLinks } from "../constants";
 import Button from "./Button";
+import { useCart } from "../context/CartContext";
+import { MdShoppingCart } from "react-icons/md";
 
 const Nav = () => {
+  const { cart } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -37,11 +40,10 @@ const Nav = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-20 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white bg-opacity-90 backdrop-blur-md shadow-md"
-          : "bg-white bg-opacity-90 backdrop-blur-md"
-      }`}
+      className={`fixed top-0 left-0 w-full z-20 transition-all duration-300 ${isScrolled
+        ? "bg-white bg-opacity-90 backdrop-blur-md shadow-md"
+        : "bg-white bg-opacity-90 backdrop-blur-md"
+        }`}
       style={{ height: "80px" }}
     >
       <nav className="flex justify-between items-center max-container padding-x h-full">
@@ -58,10 +60,9 @@ const Nav = () => {
               <NavLink
                 to={item.href}
                 className={({ isActive }) =>
-                  `font-montserrat leading-normal text-lg transition-all ${
-                    isActive
-                      ? "text-[#CD1818] border-b-2 border-[#CD1818]"
-                      : "text-black"
+                  `font-montserrat leading-normal text-lg transition-all ${isActive
+                    ? "text-[#CD1818] border-b-2 border-[#CD1818]"
+                    : "text-black"
                   } hover:text-[#CD1818] hover:border-b-2 hover:border-[#CD1818]`
                 }
               >
@@ -70,6 +71,16 @@ const Nav = () => {
             </li>
           ))}
         </ul>
+        <NavLink to="/cart" className="relative px-2">
+          <div className="relative">
+            <MdShoppingCart size={24} />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
+          </div>
+        </NavLink>
         <div className="flex gap-2 text-lg leading-normal font-medium font-montserrat max-lg:hidden wide:mr-24">
           {user ? (
             <div className="flex items-center gap-4">

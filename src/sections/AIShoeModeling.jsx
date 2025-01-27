@@ -7,15 +7,20 @@ import "react-toastify/dist/ReactToastify.css";
 import { BsQuestionLg } from "react-icons/bs";
 import { HiSpeakerphone } from "react-icons/hi";
 import { ReactTyped } from "react-typed";
+import { CgCloseR } from "react-icons/cg";
+import { Navigate } from "react-router-dom";
 
 const AIShoeModeling = () => {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
+  const [navigateToCustomize, setNavigateToCustomize] = useState(false);
   const [generatedImages, setGeneratedImages] = useState([]);
-  const [, setSelectedImage] = useState(null);
+
+  const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [, setError] = useState("");
   const [isStyleSelected, setIsStyleSelected] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const styles = [
     {
@@ -87,10 +92,30 @@ const AIShoeModeling = () => {
     }
   };
 
+  const handleImageClick = (img) => {
+    setSelectedImage(img);
+    setIsPopupVisible(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+  };
+
   const handleStyleSelect = (styleId) => {
     setSelectedStyle(styleId);
     setIsStyleSelected(true);
   };
+
+  const handleGoWithThisDesign = () => {
+    if (selectedImage) {
+      setIsPopupVisible(false);
+      setNavigateToCustomize(true);
+    }
+  };
+
+  if (navigateToCustomize) {
+    return <Navigate to="/ai-page/customize" state={{ image: selectedImage }} />;
+  }
 
   const handleReselect = () => {
     setSelectedStyle("");
@@ -102,6 +127,35 @@ const AIShoeModeling = () => {
 
   return (
     <div className="bg-[#1A1A1D] min-h-screen text-white flex flex-col items-center mt-10 padding-x py-16">
+      {isPopupVisible && selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
+          onClick={handleClosePopup}
+        >
+          <div
+            className="relative bg-white p-8 rounded-lg max-w-3xl max-h-[80vh] w-full text-black overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleClosePopup}
+              className="absolute top-3 right-3 text-xl text-gray-600 hover:text-black"
+            >
+              <CgCloseR />
+            </button>
+            <img
+              src={selectedImage}
+              alt="Selected Shoe"
+              className="w-full max-h-[60vh] object-contain rounded-lg mb-4"
+            />
+            <button
+              onClick={handleGoWithThisDesign}
+              className="w-full py-2 bg-[#CD1818] text-white rounded-lg hover:bg-[#A31414] transition-all duration-300"
+            >
+              Go with this design
+            </button>
+          </div>
+        </div>
+      )}
       <ToastContainer />
       {generatedImages.length === 0 && !isStyleSelected && (
         <>
@@ -190,7 +244,7 @@ const AIShoeModeling = () => {
                 <div
                   key={index}
                   className="relative w-48 h-48 bg-[#2A2A2D] rounded-lg overflow-hidden border-4 border-[#CD1818] transition-all duration-300"
-                  onClick={() => setSelectedImage(img)}
+                  onClick={() => handleImageClick(img)}
                 >
                   <img
                     src={img}
